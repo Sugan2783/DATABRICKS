@@ -1,0 +1,64 @@
+-- Databricks notebook source
+-- MAGIC %md
+-- MAGIC # Unity Catalog Lab: Scaling Data Quality
+-- MAGIC
+-- MAGIC ## Learning Objectives
+-- MAGIC - Understand Unity Catalog's Data Classification
+-- MAGIC - Understand Unity Catalog's Data Quality Monitoring
+-- MAGIC
+-- MAGIC Databricks Data Classification automatically scans your data to find and tag sensitive information like credit card numbers, social security numbers, and personal names. This helps organizations protect sensitive data by enabling automatic security controls and access restrictions based on what type of data is in each table.
+-- MAGIC
+-- MAGIC Databricks Data Quality Monitoring (currently in Beta) automatically assesses the freshness and completeness of all tables in a Unity Catalog schema, leveraging data intelligence to identify when tables are stale or missing expected data. The feature provides health indicators, dashboards, and alerts to help data owners quickly identify and resolve data quality issues without modifying any monitored tables or adding overhead to existing jobs.
+-- MAGIC
+-- MAGIC ## Prerequisites
+-- MAGIC - Completed Lab 1 (Environment Setup)
+
+-- COMMAND ----------
+
+-- MAGIC %python
+-- MAGIC from databricks.sdk import WorkspaceClient
+-- MAGIC
+-- MAGIC # Get current user context for governance and unique naming
+-- MAGIC w = WorkspaceClient()
+-- MAGIC user_name = w.current_user.me().user_name
+-- MAGIC user_id = w.current_user.me().user_name.split('@')[0]
+-- MAGIC
+-- MAGIC print(f"Your catalog is named: {user_id}")
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC
+-- MAGIC ### Steps to Enable Data Classification
+-- MAGIC
+-- MAGIC
+-- MAGIC 1. **Navigate to your catalog**
+-- MAGIC    - From the left-hand menu, click **Catalog** and then click on the catalog you created in the previous exercise.
+-- MAGIC      -  Run the below cell to view your catalog name
+-- MAGIC    - Click on the **Details** tab of your catalog
+-- MAGIC
+-- MAGIC 2. **Enable data classification**  
+-- MAGIC    - Click the **Data Classification** toggle to enable it
+-- MAGIC
+-- MAGIC 3. **Select schemas (optional)**
+-- MAGIC    - Choose which schemas you want to include for classification
+-- MAGIC    - By default, all schemas are included
+-- MAGIC
+-- MAGIC ![Unity Catalog Data Classification enablement](https://docs.databricks.com/aws/en/assets/images/data-classification-details-tab-faf05a27c28965929ab27cd84538c888.png)
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC
+-- MAGIC ### Steps to Enable Data Quality Monitoring
+-- MAGIC
+-- MAGIC 1. **Navigate to your catalog**
+-- MAGIC    - From the left-hand menu, click **Catalog** and then click on the catalog you created in the previous exercise.
+-- MAGIC      -  Run the above cell to view your catalog name
+-- MAGIC    - Navigate to the schema you created **sales**
+-- MAGIC    - Click on the **Details** tab of your schema
+-- MAGIC
+-- MAGIC 2. **Enable data quality monitoring**  
+-- MAGIC    - Click the **Data Quality Monitoring** toggle to enable it
+-- MAGIC
+-- MAGIC ![Unity Catalog Data Quality Monitoring enablement](https://docs.databricks.com/aws/en/assets/images/schema-details-tab-337de9fb7f793ffe2567597271b72551.png)
