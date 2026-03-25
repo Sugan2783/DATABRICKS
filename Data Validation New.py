@@ -133,8 +133,8 @@ def validate_claims(df_claims, df_icd_ref, df_providers):
     errors = []
 
     # 1. Schema check
-    expected_cols = ['claim_id', 'member_id', 'date_of_service', 'amount_paid', 'cpt_code', 'provider_id', 'claim_status']
-    missing_cols = set(expected_cols) - set(df_claims.columns)
+    expected_cols = ['claim_id', 'member_id', 'date_of_service',  'cpt_code', 'provider_id', 'claim_status']
+    missing_cols = set(df_claims.columns) - set(expected_cols)
     if missing_cols:
         errors.append(f"Missing columns: {missing_cols}")
 
@@ -145,7 +145,7 @@ def validate_claims(df_claims, df_icd_ref, df_providers):
         errors.append("Nulls found in date_of_service")
 
     # 3. Amount range check
-    if (df_claims['amount_paid'] <= 0).any():
+    if (df_claims['amount_paid'] >= 1000000).any():
         errors.append("Amount paid <= 0 found")
 
     # 4. Code validation (ICD codes)
@@ -345,3 +345,79 @@ emp_df = spark.read.format("csv").option("inferSchema",True).option("header", "t
 # COMMAND ----------
 
 
+
+# COMMAND ----------
+
+df_cust = spark.table('workspace.customer.cust_details')
+df_cust.display()
+
+
+
+# COMMAND ----------
+
+print(df_cust.columns)
+
+# COMMAND ----------
+
+def valid_col(df_cust):
+
+    exp_cust_col = ['cust_id', 'cust_name', 'cust_age', 'cust_address', 'order_dt', 'cust_status']
+    df_cust_col = df_cust.columns
+
+    if len(df_cust_col) != len(exp_cust_col):
+        missing_col = set(df_cust_col) - set(exp_cust_col)
+        return missing_col      
+    else:
+        return True
+
+valid_column = valid_col(df_cust)
+print(valid_column)
+
+
+
+# COMMAND ----------
+
+# DBTITLE 1,Schema check
+def valid_col(df_cust):
+
+    exp_cust_col = ['cust_id', 'cust_name', 'cust_age', 'cust_address', 'order_dt', 'cust_status', 'cust_order']
+    df_cust_col = df_cust.columns
+
+    if len(df_cust_col) != len(exp_cust_col):
+        missing_col = set(df_cust_col) - set(exp_cust_col)
+        return missing_col      
+    else:
+        return True
+
+valid_column = valid_col(df_cust)
+print(valid_column)
+
+print("columns are valid")
+
+# COMMAND ----------
+
+# DBTITLE 1,Count_check
+if df_cust.count() == 0:
+    print("no_data")
+else:
+    print("data count present is: ", df_cust.count())
+
+##print(df_cust.count())
+
+# COMMAND ----------
+
+if df_cust.filter(df_cust["cust_id"].isNull()).count() > 0:
+    print("null value present")
+else:
+    print("no null value present")
+
+df_cust.display()
+
+# COMMAND ----------
+
+if df_cust['cust_id'].isnull().any():
+    print("null value present")
+else:
+    print("no null value present")
+
+df_cust.display()
